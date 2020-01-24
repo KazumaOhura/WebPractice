@@ -1,0 +1,25 @@
+#Title{
+    font-size:50px;
+    color:black;
+    text-shadow: 8px, 8px, 5px, slategray;
+}
+
+.contents-title{
+    font-size:40px;
+    color:black;
+}
+
+.contents{
+    font-size:15px;
+}
+
+#summary{
+    color:green;
+    font-size:30px;
+}
+
+body{
+    font-size:15;
+    color:green;
+    background-color: black;
+}
