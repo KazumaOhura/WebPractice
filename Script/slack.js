@@ -1,47 +1,74 @@
-//const token = SlackAPI-Token;
+//const token = SlackToken;
 const channel = "times_ohura";
+const SlackUrl = "https://slack.com/api/";
 
-$(function(){
-$.ajax({
-     url: "https://slack.com/api/conversations.list?token=" + token,
-     dataType: 'json',
-     data: {},
-     success:function(data){
-         for(let i in data.channels)
-          if(data.channels[i].name == channel){
-            console.log(data);
-            writeChannelName(data.channels[i].name);
-            getHistory(data.channels[i].id);
-          }
-    },
-     error:function(error){
-        console.log("ERROR :" + error);
+window.onload = function(){
+    this.getChannelList();
+
+    var Scroll = document.documentElement;
+    var bottom = Scroll.scrollHeight - Scroll.clientHeight;
+    window.scroll(0, bottom);
+}
+
+function getChannelList(){
+
+    let httpRequest = new XMLHttpRequest();
+    if(!httpRequest){
+        console.log("HTTPリクエストの作成に失敗しました");
     }
-})
+
+    httpRequest.onreadystatechange = function(){
+        if(this.readyState == 4 && this.status == 200){
+            if(this.response){
+                console.log(this.response);
+                for(let i in this.response.channels){
+                    if(this.response.channels[i].name == channel){
+                    writeChannelName(this.response.channels[i].name);
+                    getHistory(this.response.channels[i].id);
+                    }
+                }
+            }
+        }
+    }
+
+    httpRequest.open('GET',  SlackUrl + "conversations.list?token=" + token);
+    httpRequest.responseType = 'json';
+    httpRequest.send(null);
+}
 
 function writeChannelName(name){
     $("body").append( '<p class="chatTitle">#' + name + "</p>");
 }
 
 function getHistory(id){
-    $.ajax({
-        url: "https://slack.com/api/conversations.history?token=" + token + "&channel=" + id,
-        dataType: 'json',
-        data:{},
-        success:function(data){
-           console.log(data);
-           for(let i in data.messages){
-            if(data.messages[i].bot_id != undefined)continue;
-            if(data.messages[i].text.match(/https/))continue;
-            showTimeStamp(toTimes(data.messages[i].ts));
-            showChanneleText(data.messages[i].text);
-           }
+    
+    let httpRequest = new XMLHttpRequest();
+    if(!httpRequest){
+        console.log("HTTPリクエストの作成に失敗しました");
+    }
+
+    httpRequest.onreadystatechange = function(){
+        if(this.readyState == 4 && this.status == 200){
+            if(this.response){
+                console.log(this.response);
+                for(let i in this.response.messages){
+                    if(this.response.messages[i].bot_id != undefined)continue;
+                    if(this.response.messages[i].text.match(/https/))continue;
+                    showTimeStamp(toTimes(this.response.messages[i].ts));
+                    showChanneleText(this.response.messages[i].text);
+                }
+            }
         }
-    });
+    }
+
+    httpRequest.open('GET',  SlackUrl + "conversations.history?token=" + token + "&channel=" + id);
+    httpRequest.responseType = 'json';
+    httpRequest.send(null);
 }
 
 function showTimeStamp(val){
     $("body").append('<p class="chatTime">' + val.year + "/" + val.month + "/" + val.date +  " " + val.hours + ":" + val.minutes + '</p>');
+    //document.getElementsByClassName('chatTime')
 }
 
 function showChanneleText(text){
@@ -61,4 +88,3 @@ function toTimes(val){
     console.log(ret);
     return ret;
 }
-});
