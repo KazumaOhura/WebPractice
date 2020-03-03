@@ -1,4 +1,4 @@
-const SLACK_TOKEN = "xoxp-601666621505-607909277205-921425163252-f80c020ceab295be1151b8c81e04121a";
+const SLACK_TOKEN = ""; //SlackのAPIトークン
 const TARGET_CHANNEL = "times_ohura";
 const SLACK_API_URL = "https://slack.com/api/";
 
